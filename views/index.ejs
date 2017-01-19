@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    姓名：<input id="name" type="text" placeholder="请输入姓名"><br>
+    学号：<input id="sID" type="text" placeholder="请输入学号"><br>
+    性别：<input id="sex" type="text" placeholder="请输入性别"><br>
+    班级：<input id="grade" type="text" placeholder="请输入班级"><br>
+    分数：<input id="score" type="text" placeholder="请输入分数"><br>
+    <button onclick="saveData()">提交</button>
+    <br>
+    <button onclick="check()">查看前20名</button>
+    <ul></ul>
+    <script src="/javascripts/jquery.min.js"></script>
+    <script>
+        function saveData() {
+            var name = $('#name').val();
+            var sID = $('#sID').val();
+            var sex = $('#sex').val();
+            var grade = $('#grade').val();
+            var score = $('#score').val();
+            $.post('/save',{name:name,sID:sID,sex:sex,grade:grade,score:score},function (err,response,data) {
+                console.log(err,data);
+            });
+        }
+
+
+        function check() {
+            console.log('进入后端');
+            $.ajax({
+                type: "POST",
+                url: '/getData',
+                data: {},
+                success: function (data) {
+                    var userArr = data.info;
+                    var li = '';
+                    userArr.forEach(function (item,index) {
+                        li += '<li>第'+(index+1)+'名'+item.name+' '+item.sex+' '+item.grade+'班 '+item.score+'分</li>';
+                    });
+                    $('ul').empty().append(li);
+                },
+                error:function (err) {
+                    console.error(err);
+                }
+            });
+        }
+
+    </script>
+  </body>
+</html>
